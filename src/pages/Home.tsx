@@ -22,7 +22,7 @@ import {
 } from "@mui/icons-material";
 import { hljs, buildHighlightStyles } from "../highlight";
 
-const HERO_CMD = "eval(webread('https://mip.sh/install.m'))";
+const HERO_CMD = "eval(webread('https://mip.sh/install.txt'))";
 
 function HeroCommand() {
   const theme = useTheme();
