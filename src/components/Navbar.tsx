@@ -27,6 +27,7 @@ export default function Navbar() {
   const navItems = [
     { label: "Home", path: "/" },
     { label: "Packages", path: "/packages" },
+    { label: "Blog", path: "/blog" },
   ];
 
   return (
