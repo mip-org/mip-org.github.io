@@ -98,6 +98,10 @@ Once loaded, you can use it like any other MATLAB function:
 hello_mip()
 ```
 
+## Try it live
+
+You can try `hello_mip` right now in the browser using [numbl](https://numbl.org): [open this example in numbl](https://numbl.org/share#eJx9jjEKwkAQRa-yTKWQ1T7pLb2AyjJZx2Rhdia4Q5qQu7uxCNjYfR7_wVvglZgKtLcFBDNBCz3rECYtFkZi1pDTdMrQQFQxEquPSlySYsjsvI8jihC7Sr2-h_PXcrvb3WX7s-LzB-77cOxgfTSA0dJMl5pz_ReyfgCOAUC-).
+
 ## What's next
 
 That's all it takes to get a package into MIP. From here you can add more packages to your channel, set up versioned releases, or add packages with MEX compilation for multiple architectures. See the [mip-channel-template](https://github.com/mip-org/mip-channel-template) README and the [mip-core](https://github.com/mip-org/mip-core) channel for more examples.

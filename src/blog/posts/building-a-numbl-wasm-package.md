@@ -177,6 +177,10 @@ b = [2, 3, 4, 5, 6];
 wdot(a, b)
 ```
 
+## Try it live
+
+You can try the WASM dot product right now in the browser: [open this example in numbl](https://numbl.org/share#eJyFz00KgzAQBeCrDLNSiC39XSjddtkLqMgYUw0kE2lCXYh3b-ymlC66_WbegzfjXRvlMS9nZLIKc2yN65vR-dAMyhjXWD02E3m7sShQOg6KQ3yLDJp9IGMgy-RAzMpA1Mw9-u07Ct8FRcVryDjqfi8VE1yg3AnYCzgIOAo41dHbVT8k4LyqjDp1LiQkoE0jdNqPiUwLXGqBJIN-qmscdvs7aXkBzvlW2w).
+
 ## What's next
 
 This example covers the basics, but the same pattern scales to wrapping larger libraries. For a more involved example, see how [finufft](https://github.com/mip-org/mip-core/tree/main/packages/finufft) is packaged in mip-core. It compiles a full C++ library with Emscripten and exposes multiple functions through the same `register`/`// wasm:` pattern.
