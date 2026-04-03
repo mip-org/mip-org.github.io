@@ -47,7 +47,7 @@ export default function DocArticle() {
               "& ul, & ol": { pl: 3, mb: 2 },
               "& li": { ...theme.typography.body1, mb: 0.5 },
               "& a": { color: theme.palette.primary.main },
-              "& code:not(.mip-code):not(.mip-code code)": {
+              "& :not(pre) > code:not(.mip-code):not(.mip-code code)": {
                 fontFamily: '"Meslo LG", monospace',
                 fontSize: "0.875rem",
                 backgroundColor: isDark
@@ -58,13 +58,14 @@ export default function DocArticle() {
                 py: 0.25,
               },
               "& pre": {
+                position: "relative",
                 borderRadius: 2,
                 border: `1px solid ${theme.palette.divider}`,
                 backgroundColor: isDark
                   ? "rgba(0, 0, 0, 0.4)"
                   : "rgba(0, 0, 0, 0.06)",
                 p: 2,
-                overflowX: "auto",
+                overflow: "auto",
                 mb: 2,
                 "& code": {
                   fontFamily: '"Meslo LG", monospace',
@@ -91,6 +92,7 @@ export default function DocArticle() {
                     return (
                       <code
                         className="mip-code"
+                        data-language={lang}
                         dangerouslySetInnerHTML={{ __html: highlighted }}
                         {...props}
                       />
@@ -100,6 +102,15 @@ export default function DocArticle() {
                     <code className={className} {...props}>
                       {children}
                     </code>
+                  );
+                },
+                pre({ children, node, ...props }: any) {
+                  const codeNode = node?.children?.find((c: any) => c.tagName === "code");
+                  const cls = codeNode?.properties?.className ?? [];
+                  const langMatch = cls.find((c: string) => c.startsWith("language-"));
+                  const lang = langMatch?.replace("language-", "");
+                  return (
+                    <pre {...props}>{lang && (<span style={{ position: "absolute", top: 8, right: 12, fontSize: "0.7rem", color: theme.palette.text.secondary, textTransform: "uppercase", letterSpacing: "0.05em", userSelect: "none" }}>{lang}</span>)}{children}</pre>
                   );
                 },
               }}
