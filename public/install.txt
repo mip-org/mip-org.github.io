@@ -32,7 +32,7 @@ if exist('mip', 'file') || isfolder(fullfile(mip_install___mipdir, 'packages'))
 end
 
 % Find all versions of mip available in the package index
-mip_install___package_index = webread('https://mip-org-2.github.io/mip-core/index.json');
+mip_install___package_index = webread('https://mip-org.github.io/mip-core/index.json');
 mip_install___versions = {};
 for mip_install___i = 1:length(mip_install___package_index.packages)
     if strcmpi(mip_install___package_index.packages(mip_install___i).name, 'mip')
@@ -79,8 +79,8 @@ end
 
 fprintf('Installing mip version %s to ''%s''\n', mip_install___latest.version, mip_install___mipdir);
 
-% Unzip the .mhl to <MIPDIR>/packages/mip-org-2/core/mip
-mip_install___mippackagedir = fullfile(mip_install___mipdir, 'packages', 'mip-org-2', 'core', 'mip');
+% Unzip the .mhl to <MIPDIR>/packages/mip-org/core/mip
+mip_install___mippackagedir = fullfile(mip_install___mipdir, 'packages', 'mip-org', 'core', 'mip');
 unzip(mip_install___mhl, mip_install___mippackagedir);
 
 % Cache the user's current path
@@ -89,13 +89,13 @@ mip_install___current_path = path;
 % Change the path to match what it would be if MATLAB had just started up
 path(pathdef);
 
-% Add <MIPDIR>/packages/mip-org-2/core/mip/mip to the path and save it for future MATLAB
+% Add <MIPDIR>/packages/mip-org/core/mip/mip to the path and save it for future MATLAB
 % sessions
 mip_install___mipsourcedir = fullfile(mip_install___mippackagedir, 'mip');
 addpath(mip_install___mipsourcedir)
 savepath;
 
-% Restore the path to what it was before and add <MIPDIR>/packages/mip-org-2/core/mip/mip
+% Restore the path to what it was before and add <MIPDIR>/packages/mip-org/core/mip/mip
 % to the path for the current MATLAB session
 path(mip_install___current_path);
 addpath(mip_install___mipsourcedir);
