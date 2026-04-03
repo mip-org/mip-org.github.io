@@ -1,14 +1,13 @@
 ---
-title: Building a MIP Package with MEX Files
-date: 2026-03-31
+title: Building a MEX Package
 slug: building-a-mex-package
-author: Jeremy Magland
-summary: How to create a MIP package that compiles C code into MEX binaries for MATLAB.
+summary: Create a MIP package that compiles C code into MEX binaries for MATLAB.
+order: 3
 ---
 
-MEX files let you call compiled C, C++, or Fortran code directly from MATLAB. They're the standard way to speed up performance-critical operations. MIP handles the compilation automatically: you provide your source code and a compile script, and the channel's CI builds architecture-specific MEX binaries for Linux and macOS.
+MEX files let you call compiled C, C++, or Fortran code directly from MATLAB. MIP handles compilation automatically: you provide your source code and a compile script, and the channel's CI builds architecture-specific MEX binaries for Linux and macOS.
 
-In this post we'll create a MIP package that includes a C MEX function. We'll use a simple dot product as the example, but the same pattern applies to wrapping larger C/C++ libraries.
+In this guide we'll create a MIP package that includes a C MEX function. We'll use a simple dot product as the example, but the same pattern applies to wrapping larger C/C++ libraries.
 
 ## How it works
 
@@ -17,16 +16,17 @@ A MEX package has two parts beyond the normal MATLAB source:
 - A **C (or C++/Fortran) source file** that implements the `mexFunction` entry point
 - A **compile script** (`compile.m`) that calls MATLAB's `mex` command to build the binary
 
-The channel's CI runs the compile script on each target platform, producing architecture-specific `.mex*` binaries (`.mexa64` on Linux, `.mexmaca64` on macOS ARM, etc.). These get bundled into the package so that users don't need a compiler installed.
+When hosted on a channel, the CI runs the compile script on each target platform, producing architecture-specific `.mex*` binaries (`.mexa64` on Linux, `.mexmaca64` on macOS ARM, etc.). These get bundled into the package so that users don't need a compiler installed.
 
 ## The C implementation
 
-Here's [hello_mip_mex](https://github.com/mip-org/hello_mip_mex), a minimal example. The repo has just two files:
+Here's [hello_mip_mex](https://github.com/mip-org/hello_mip_mex), a minimal example. The repo has three files:
 
 ```
 hello_mip_mex/
   mex_dot.c       # C MEX implementation
   compile.m       # Compilation script
+  mip.yaml        # Package definition
 ```
 
 The C file implements the standard MEX interface. MATLAB calls `mexFunction` with input and output arrays, and you read the data, do your computation, and write the result back.
@@ -66,16 +66,9 @@ void mexFunction(int nlhs, mxArray *plhs[],
 }
 ```
 
-The key pieces of the MEX API used here:
-
-- `mxGetPr` returns a pointer to the real data of a double array
-- `mxGetNumberOfElements` returns the total element count
-- `mxCreateDoubleScalar` creates a 1x1 output array
-- `mexErrMsgIdAndTxt` throws a MATLAB error with a message ID and text
-
 ## The compile script
 
-The compile script is a MATLAB `.m` file that runs during the channel's CI build. It calls the `mex` command on each source file:
+The compile script is a MATLAB `.m` file that calls the `mex` command on each source file:
 
 ```matlab
 fprintf('Compiling hello_mip_mex MEX files...\n');
@@ -107,52 +100,41 @@ For packages that link against external libraries, you can pass include paths an
 mex('-I/path/to/include', '-L/path/to/lib', '-lmylib', 'my_function.c');
 ```
 
-## Packaging for MIP
+## The mip.yaml
 
-With the source repo ready, add it to your MIP channel. If you don't have a channel yet, see [Creating Your Own MIP Channel and Your First Package](/blog/creating-your-own-mip-channel).
-
-Create `packages/hello_mip_mex/releases/main/prepare.yaml` in your channel repo:
+The `mip.yaml` lives in the source repo alongside the code:
 
 ```yaml
 name: hello_mip_mex
 description: "A simple test package demonstrating MEX compilation"
 version: "main"
-dependencies: []
+license: MIT
 homepage: "https://github.com/mip-org/hello_mip_mex"
 repository: "https://github.com/mip-org/hello_mip_mex"
-license: "MIT"
+dependencies: []
 
-defaults:
-  release_number: 1
-  prepare:
-    clone_git:
-      url: "https://github.com/mip-org/hello_mip_mex"
-      destination: "hello_mip_mex"
-      branch: "main"
-  addpaths:
-    - path: "hello_mip_mex"
+addpaths:
+  - path: "."
 
 builds:
   - architectures: [linux_x86_64, macos_x86_64, macos_arm64]
-    compile_script: hello_mip_mex/compile.m
+    compile_script: compile.m
 ```
 
 A few things to note compared to a pure-MATLAB package:
 
 - `architectures` lists the specific platforms to build for, instead of `[any]`. Each architecture gets its own build with the appropriate MEX binary.
-- `compile_script` points to the MATLAB script that compiles the MEX files, relative to the prepared package directory. Since the source is cloned into `hello_mip_mex/`, the path includes that prefix. The channel's CI runs this automatically on each target platform using MATLAB.
+- `compile_script` points to the MATLAB script that compiles the MEX files. The channel's CI runs this automatically on each target platform.
 - The `addpaths` entry points to the directory containing both the `.c` source and the compiled `.mex*` binary. MATLAB resolves the MEX function by name, just like a `.m` file.
 
 Note that MIP strips any pre-compiled MEX binaries from the source before building. This ensures every binary is built from source in CI, so users get consistent, trustworthy builds for their platform.
 
-Push to `main` and the channel's GitHub Actions will clone the source, run the compile script on each platform, and publish architecture-specific packages.
-
-## Installing and using the package
+## Using the package
 
 Install and load the package in MATLAB:
 
 ```matlab
-mip install --channel youruser/mylab hello_mip_mex
+mip install hello_mip_mex
 mip load hello_mip_mex
 ```
 

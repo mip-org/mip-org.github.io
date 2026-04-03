@@ -1,14 +1,13 @@
 ---
-title: Building a Numbl WASM Package for MIP
-date: 2026-03-31
-slug: building-a-numbl-wasm-package
-author: Jeremy Magland
-summary: How to create a MIP package that compiles C code to WebAssembly for use in Numbl.
+title: Building a WASM Package
+slug: building-a-wasm-package
+summary: Create a MIP package that compiles C code to WebAssembly for use in Numbl.
+order: 4
 ---
 
-[Numbl](https://numbl.org) is a MATLAB-compatible computing environment that runs in the browser and on the desktop. It executes `.m` files by compiling them to JavaScript, which works well for basic code. But for computationally intensive operations, you can write functions in C, compile them to WebAssembly, and call them from your numbl code. This is numbl's equivalent of MEX in MATLAB, where you'd compile C/C++ into MEX binaries. MEX compilation for MIP packages is covered elsewhere. WASM gives you better performance than pure JavaScript while still running entirely in the browser. For the CLI and desktop versions of numbl, you can also compile a native binary for even better performance, but that's a topic for another post.
+[Numbl](https://numbl.org) is a MATLAB-compatible computing environment that runs in the browser and on the desktop. It executes `.m` files by compiling them to JavaScript, which works well for basic code. But for computationally intensive operations, you can write functions in C, compile them to WebAssembly, and call them from your numbl code. This is numbl's equivalent of MEX in MATLAB, where you'd compile C/C++ into MEX binaries. WASM gives you better performance than pure JavaScript while still running entirely in the browser.
 
-In this post we'll create a MIP package that includes a WASM-compiled C function. We'll use a simple dot product as the example, but the same pattern applies to wrapping larger C/C++ libraries.
+In this guide we'll create a MIP package that includes a WASM-compiled C function. We'll use a simple dot product as the example, but the same pattern applies to wrapping larger C/C++ libraries.
 
 ## How it works
 
@@ -18,7 +17,7 @@ A numbl WASM function has three parts:
 - A **JavaScript wrapper** that tells numbl how to call the WASM function, handling memory allocation and data copying
 - A **build script** that compiles the source to `.wasm` using Emscripten
 
-For this tutorial, we'll keep these files in a `numbl/` subdirectory of the package source repo. When the package is loaded, numbl picks up the `.js` files and uses them to call the compiled WASM functions.
+For this guide, we'll keep these files in a `numbl/` subdirectory of the package source repo. When the package is loaded, numbl picks up the `.js` files and uses them to call the compiled WASM functions.
 
 Let's walk through each piece using [hello_mip_wasm](https://github.com/mip-org/hello_mip_wasm), a minimal example package. The repo looks like this:
 
@@ -125,46 +124,38 @@ emcc "$SCRIPT_DIR/wdot.c" -O2 \
 
 `-s STANDALONE_WASM` produces a self-contained WASM module with no JavaScript glue code. `--no-entry` tells the compiler there's no `main` function. `-O2` enables optimization.
 
-## Packaging for MIP
+## The mip.yaml
 
-With the source repo ready, we need to add it to a MIP channel. If you don't have a channel yet, see [Creating Your Own MIP Channel and Your First Package](/blog/creating-your-own-mip-channel).
+Unlike the MEX example where `mip.yaml` lives in the source repo, this package doesn't include one in its source. Instead, the channel provides the `mip.yaml` alongside the `recipe.yaml`. See [Hosting a Channel](/docs/hosting-a-channel) for how this works.
 
-Create `packages/hello_mip_wasm/releases/main/prepare.yaml` in your channel repo:
+The `mip.yaml` for a WASM package looks like this:
 
 ```yaml
 name: hello_mip_wasm
 description: "A simple test package demonstrating WASM compilation for numbl"
 version: "main"
-dependencies: []
+license: MIT
 homepage: "https://github.com/mip-org/hello_mip_wasm"
 repository: "https://github.com/mip-org/hello_mip_wasm"
-license: "MIT"
+dependencies: []
 
-defaults:
-  symbol_extensions: [".m", ".js"]
-  release_number: 1
-  prepare:
-    clone_git:
-      url: "https://github.com/mip-org/hello_mip_wasm"
-      destination: "hello_mip_wasm"
-      branch: "main"
-  addpaths:
-    - path: "hello_mip_wasm/numbl"
+addpaths:
+  - path: "numbl"
+
+symbol_extensions: [".m", ".js"]
 
 builds:
   - architectures: [numbl_wasm]
-    build_script: hello_mip_wasm/numbl/build_wasm.sh
+    compile_script: compile_numbl_wasm.m
 ```
 
 A few things to note compared to a pure-MATLAB package:
 
 - `symbol_extensions` includes `".js"` so that numbl picks up the JavaScript wrappers as symbols.
 - `architectures` is `[numbl_wasm]` instead of `[any]`, since this package only works in numbl with WASM support.
-- `build_script` points to our Emscripten build script. The channel's CI will run this automatically using its Emscripten environment.
+- `compile_script` points to a MATLAB script that wraps the Emscripten build. The channel's CI runs this automatically.
 
-Push to `main` and the channel's GitHub Actions will clone the source, run the build script to compile `wdot.wasm`, and publish the package.
-
-## Installing and using the package
+## Using the package
 
 Go to [numbl.org](https://numbl.org), create a new project, and run the following in the terminal:
 
