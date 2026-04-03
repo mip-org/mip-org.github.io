@@ -24,9 +24,9 @@ Here's [hello_mip_mex](https://github.com/mip-org/hello_mip_mex), a minimal exam
 
 ```
 hello_mip_mex/
-  mex_dot.c       # C MEX implementation
-  compile.m       # Compilation script
-  mip.yaml        # Package definition
+├── mex_dot.c       # C MEX implementation
+├── compile.m       # Compilation script
+└── mip.yaml        # Package definition
 ```
 
 The C file implements the standard MEX interface. MATLAB calls `mexFunction` with input and output arrays, and you read the data, do your computation, and write the result back.
@@ -143,7 +143,7 @@ Then use it like any other MATLAB function:
 ```matlab
 a = [1, 2, 3, 4, 5];
 b = [2, 3, 4, 5, 6];
-mex_dot(a, b)    % returns 70
+mex_dot(a, b) % Returns 70
 ```
 
 ## What's next

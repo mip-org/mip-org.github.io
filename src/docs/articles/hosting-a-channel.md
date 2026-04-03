@@ -23,9 +23,9 @@ Each package needs a `recipe.yaml` that tells the channel where to get the sourc
 
 ```
 packages/<name>/releases/<version>/
-  recipe.yaml       # Required: where to get the source
-  mip.yaml          # Optional: overrides mip.yaml from source repo
-  compile.m         # Optional: channel-provided compilation script
+├── recipe.yaml       # Required: where to get the source
+├── mip.yaml          # Optional: overrides mip.yaml from source repo
+└── compile.m         # Optional: channel-provided compilation script
 ```
 
 ### Pointing to a source repo (recommended)
@@ -48,8 +48,8 @@ If the source repo doesn't include a `mip.yaml`, or if you want to override it, 
 
 ```
 packages/my_package/releases/main/
-  recipe.yaml
-  mip.yaml          # channel-provided metadata
+├── recipe.yaml
+└── mip.yaml          # channel-provided metadata
 ```
 
 This is useful when packaging third-party code that you don't control, or when different channels need different build configurations for the same source.
@@ -61,9 +61,9 @@ The `recipe.yaml` supports several options for fetching source code:
 ```yaml
 source:
   git: "https://github.com/someone/some-matlab-repo.git"
-  branch: "main"              # optional: branch or tag
-  subdirectory: "matlab"      # optional: extract only this subdirectory
-  remove_dirs: [tests, docs]  # optional: remove directories after clone
+  branch: "main"              # Optional: branch or tag
+  subdirectory: "matlab"      # Optional: extract only this subdirectory
+  remove_dirs: [tests, docs]  # Optional: remove directories after clone
 ```
 
 ### Including source in the channel
@@ -87,10 +87,10 @@ You can have multiple versions side by side:
 
 ```
 packages/my_package/releases/
-  main/
-    recipe.yaml
-  1.0.0/
-    recipe.yaml
+├── main/
+│   └── recipe.yaml
+└── 1.0.0/
+    └── recipe.yaml
 ```
 
 ## How CI works

@@ -91,11 +91,15 @@ export default function DocArticle() {
                     const highlighted = hljs.highlight(code, {
                       language: lang,
                     }).value;
+                    const prompt = `<span style="user-select:none;color:${theme.palette.text.secondary}">&gt;&gt;&nbsp;</span>`;
+                    const html = lang === "matlab"
+                      ? highlighted.split("\n").map((line) => prompt + line).join("\n")
+                      : highlighted;
                     return (
                       <code
                         className="mip-code"
                         data-language={lang}
-                        dangerouslySetInnerHTML={{ __html: highlighted }}
+                        dangerouslySetInnerHTML={{ __html: html }}
                         {...props}
                       />
                     );

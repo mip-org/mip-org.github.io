@@ -23,10 +23,10 @@ Let's walk through each piece using [hello_mip_wasm](https://github.com/mip-org/
 
 ```
 hello_mip_wasm/
-  numbl/
-    wdot.c            # C implementation
-    wdot.js           # JavaScript wrapper
-    build_wasm.sh     # Emscripten build script
+└── numbl/
+    ├── wdot.c            # C implementation
+    ├── wdot.js           # JavaScript wrapper
+    └── build_wasm.sh     # Emscripten build script
 ```
 
 ## The C implementation

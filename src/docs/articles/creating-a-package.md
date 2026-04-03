@@ -13,8 +13,8 @@ Start with a directory containing your MATLAB code and a `mip.yaml`:
 
 ```
 my_package/
-  my_function.m
-  mip.yaml
+├── my_function.m
+└── mip.yaml
 ```
 
 The `mip.yaml` defines the package metadata:
