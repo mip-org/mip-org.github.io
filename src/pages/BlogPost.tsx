@@ -10,6 +10,7 @@ import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { posts } from "../blog/posts";
 import { hljs, buildHighlightStyles } from "../highlight";
+import MarkdownPre from "../components/MarkdownPre";
 
 export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
@@ -65,7 +66,8 @@ export default function BlogPost() {
                 backgroundColor: isDark
                   ? "rgba(0, 0, 0, 0.4)"
                   : "rgba(0, 0, 0, 0.06)",
-                p: 2,
+                px: 2,
+                py: 1,
                 overflow: "auto",
                 mb: 2,
                 "& code": {
@@ -105,15 +107,7 @@ export default function BlogPost() {
                     </code>
                   );
                 },
-                pre({ children, node, ...props }: any) {
-                  const codeNode = node?.children?.find((c: any) => c.tagName === "code");
-                  const cls = codeNode?.properties?.className ?? [];
-                  const langMatch = cls.find((c: string) => c.startsWith("language-"));
-                  const lang = langMatch?.replace("language-", "");
-                  return (
-                    <pre {...props}>{lang && (<span style={{ position: "absolute", top: 8, right: 12, fontSize: "0.7rem", color: theme.palette.text.secondary, textTransform: "uppercase", letterSpacing: "0.05em", userSelect: "none" }}>{lang}</span>)}{children}</pre>
-                  );
-                },
+                pre: MarkdownPre,
               }}
             />
           </Box>

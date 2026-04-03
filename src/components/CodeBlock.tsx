@@ -60,8 +60,8 @@ export default function CodeBlock({
             component="span"
             sx={{
               position: "absolute",
-              top: 8,
-              right: 12,
+              top: 12,
+              right: 40,
               fontSize: "0.7rem",
               color: theme.palette.text.secondary,
               textTransform: "uppercase",
