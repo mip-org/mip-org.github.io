@@ -3,22 +3,28 @@ fprintf(['This script will:\n' ...
     '- Download the latest version of mip.\n' ...
     '- Install it to a specified directory.\n' ...
     '- Save mip to your MATLAB path for future sessions.\n']);
-fprintf('\nPress <enter> to continue, <ctrl+c> to abort.\n');
-pause
 
-% Set the default mip location (<userpath>/mip)
-mip_install___mipdir = fullfile(userpath, 'mip');
-
-% Prompt the user for custom mip location
-mip_install___prompt = sprintf('\nEnter install location for mip (%s): ', mip_install___mipdir);
-mip_install___input = input(mip_install___prompt, 's');
-if ~isempty(mip_install___input)
+% Prompt the user for custom mip location (default: <userpath>/mip)
+if ispc || isempty(getenv('HOME'))
+    mip_install___input = input(sprintf('\nEnter install location for mip (%s): ', fullfile(userpath, 'mip')), 's');
+else
+    mip_install___input = input(sprintf('\nEnter install location for mip (%s): ', replace(fullfile(userpath, 'mip'), getenv('HOME'), '~')), 's');
+end
+if isempty(mip_install___input)
+    mip_install___mipdir = fullfile(userpath, 'mip');
+else
     mip_install___mipdir = mip_install___input;
+end
+
+if ispc || isempty(getenv('HOME'))
+    mip_install___mipdirpretty = mip_install___mipdir;
+else
+    mip_install___mipdirpretty = replace(mip_install___mipdir, getenv('HOME'), '~');
 end
 
 % If the mip command is already available on the path, inform user and abort
 if isfile('mip') || isfolder(fullfile(mip_install___mipdir, 'packages'))
-    fprintf('\nmip is already installed.\n');
+    fprintf('mip is already installed.\n');
     fprintf('To update mip, run:\n\n  mip update mip\n\n');
     clear mip_install___*
     return
@@ -98,7 +104,7 @@ if isempty(mip_install___mhl)
     error('Failed to download mip. Installation aborted.');
 end
 
-fprintf('Installing mip version %s to ''%s''\n', mip_install___latest.version, mip_install___mipdir);
+fprintf('Installing mip version %s to ''%s''\n', mip_install___latest.version, mip_install___mipdirpretty);
 
 % Unzip the .mhl to <MIPDIR>/packages/mip-org/core/mip
 mip_install___mippackagedir = fullfile(mip_install___mipdir, 'packages', 'mip-org', 'core', 'mip');
