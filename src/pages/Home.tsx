@@ -14,7 +14,7 @@ import {
   Download,
   AccountTree,
   Route,
-  TextFields,
+  RssFeed,
   Terminal,
   Memory,
   ContentCopy,
@@ -110,10 +110,10 @@ const features = [
       "Packages using MEX include pre-compiled binaries for your architecture. No local compilation required.",
   },
   {
-    icon: <TextFields />,
-    title: "Name collision detection",
+    icon: <RssFeed />,
+    title: "Distributed channels",
     description:
-      "Detect overlapping symbol names across installed packages to avoid namespace conflicts before they happen.",
+      "Install popular packages from the main channel or create custom channels to distribute your own packages.",
   },
   {
     icon: <Terminal />,
