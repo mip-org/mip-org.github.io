@@ -135,7 +135,7 @@ export default function Packages() {
                     </Typography>
                     {pkg.version !== "unspecified" && (
                       <Chip
-                        label={`v${pkg.version}`}
+                        label={pkg.version}
                         size="small"
                         variant="outlined"
                       />
