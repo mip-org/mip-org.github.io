@@ -46,6 +46,7 @@ function HeroCommand() {
       sx={{
         display: "inline-flex",
         alignItems: "center",
+        maxWidth: "100%",
         backgroundColor: isDark ? "rgba(0, 0, 0, 0.4)" : "rgba(0, 0, 0, 0.06)",
         borderRadius: 2,
         px: 1.5,
@@ -54,20 +55,33 @@ function HeroCommand() {
         fontFamily: '"Meslo LG", monospace',
         fontSize: { xs: "1rem", md: "1.1rem" },
         lineHeight: 1,
-        whiteSpace: "nowrap",
       }}
     >
       <Box
-        component="span"
-        sx={{ userSelect: "none", color: theme.palette.text.secondary, flexShrink: 0 }}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          minWidth: 0,
+          overflowX: "auto",
+          overflowY: "hidden",
+          whiteSpace: "nowrap",
+          lineHeight: 1.4,
+          scrollbarWidth: "none",
+          "&::-webkit-scrollbar": { display: "none" },
+        }}
       >
-        &gt;&gt;&nbsp;
+        <Box
+          component="span"
+          sx={{ userSelect: "none", color: theme.palette.text.secondary, flexShrink: 0 }}
+        >
+          &gt;&gt;&nbsp;
+        </Box>
+        <code
+          className="mip-code"
+          style={{ fontFamily: "inherit", fontSize: "inherit" }}
+          dangerouslySetInnerHTML={{ __html: highlighted }}
+        />
       </Box>
-      <code
-        className="mip-code"
-        style={{ fontFamily: "inherit", fontSize: "inherit" }}
-        dangerouslySetInnerHTML={{ __html: highlighted }}
-      />
       <IconButton
         onClick={handleCopy}
         size="small"
