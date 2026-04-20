@@ -103,7 +103,7 @@ On every push to `main`, the channel's GitHub Actions workflow:
 4. **Assembles index**: collects metadata into `index.json`
 5. **Deploys**: publishes `index.json` and `packages.html` to GitHub Pages
 
-Builds run in parallel across architectures (Linux x86_64, macOS x86_64, macOS ARM64, numbl WASM, etc.). Packages with `architectures: [any]` only build once to avoid duplication.
+Builds run in parallel across architectures (Linux x86_64, macOS x86_64, macOS ARM64, Windows x86_64). Packages with `architectures: [any]` only build once to avoid duplication.
 
 The workflow includes caching: if the source hasn't changed since the last build, the package is skipped.
 
