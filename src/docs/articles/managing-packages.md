@@ -19,6 +19,8 @@ mip avail --channel youruser/mylab
 
 `mip info` with a bare name shows details for every installation with that name. Pass a fully qualified name (`org/channel/name`) to narrow to one.
 
+`mip list` annotates each package with any of `[sticky]`, `[pinned]`, or `[editable: <source>]` as applicable. An asterisk (`*`) marks packages you loaded directly (as opposed to those pulled in as dependencies).
+
 ## Updating
 
 Update one package:
@@ -47,6 +49,19 @@ mip update --all --force
 ```
 
 If the new version of a package has new dependencies, they are installed automatically. If it drops a dependency that no other directly-installed package needs, that dependency is pruned.
+
+### Pinning a package
+
+To protect a package from `mip update --all` — for example, because a newer release broke something you depend on — pin it:
+
+```matlab
+mip pin chebfun
+mip unpin chebfun
+```
+
+Pinned packages are skipped by `mip update --all` (a "Skipping pinned package" message is printed for each). They are **not** protected from an explicit `mip update chebfun` — naming the package updates it. Passing `--force` also overrides the pin and automatically unpins the package after a successful update.
+
+Pinned packages show up with a `[pinned]` marker in `mip list`. The pin is cleared automatically if you uninstall the package.
 
 ### Updating MIP itself
 

@@ -7,17 +7,27 @@ order: 3
 
 A MIP package is a directory of MATLAB code with a `mip.yaml` file that describes it. You can create, install, and use packages locally without publishing them to a channel.
 
+## Scaffolding with `mip init`
+
+The quickest way to turn a directory of MATLAB code into a package is `mip init`, which generates a `mip.yaml` for you:
+
+```matlab
+cd /path/to/my_package
+mip init
+```
+
+This walks the directory, adds any folders that contain MATLAB code to `addpaths`, creates a blank `test_my_package.m` placeholder, and writes a `mip.yaml` ready for you to fill in. The package name defaults to the directory's basename; override it with `--name` if needed:
+
+```matlab
+mip init /path/to/my_package --name my_package
+mip init . --repository https://github.com/youruser/my_package
+```
+
+If a `mip.yaml` already exists, `mip init` leaves it alone.
+
 ## A minimal package
 
-Start with a directory containing your MATLAB code and a `mip.yaml`:
-
-```
-my_package/
-├── my_function.m
-└── mip.yaml
-```
-
-The `mip.yaml` defines the package metadata:
+A filled-in `mip.yaml` for a pure-MATLAB package looks like this:
 
 ```yaml
 name: my_package
@@ -33,6 +43,8 @@ builds:
   - architectures: [any]
 ```
 
+`mip init` generates this shape with some fields left blank (`description`, `license`, `homepage`, and `repository`) and `version: "unknown"` as a placeholder, ready for you to edit.
+
 The `addpaths` entries tell MIP which directories to add to the MATLAB path when the package is loaded. Only the listed directories are added — subdirectories are not added automatically. `architectures: [any]` means the package is pure MATLAB with no compiled code.
 
 ## Installing locally
@@ -43,6 +55,8 @@ Install the package by pointing to its directory. The path must start with `.`, 
 mip install ./my_package
 mip install /abs/path/to/my_package
 ```
+
+If the directory has no `mip.yaml`, `mip install` offers to run `mip init` for you before continuing.
 
 This bundles and installs the package into MIP's package store. You can then load and use it:
 

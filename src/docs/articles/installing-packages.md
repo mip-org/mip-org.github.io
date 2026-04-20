@@ -41,6 +41,19 @@ mip load chebfun
 
 This adds the package (and its dependencies) to your path for the current session. Dependencies are loaded automatically too.
 
+### Adding or removing extra paths at load time
+
+Sometimes a package's default `addpaths` aren't quite what you want — you may need an extra subdirectory on the path, or want to drop one that shadows something else. Pass `--addpath <relpath>` or `--rmpath <relpath>` to `mip load`:
+
+```matlab
+mip load my_package --addpath examples
+mip load my_package --addpath examples --rmpath src/legacy
+```
+
+`<relpath>` is resolved relative to the package's source directory. Both flags can be repeated to specify multiple paths in one call, and they apply only to the single package you're loading — transitively-loaded dependencies are unaffected.
+
+These adjustments are **transient**: they apply for this load only. The next `mip load` without the flags reverts to the package's default paths.
+
 ## Unloading
 
 ```matlab
@@ -90,6 +103,30 @@ mip install mip-org/core/chebfun@main
 ```
 
 This is a request, not a pin — MIP installs that version if it exists in the channel, and fails with `mip:versionNotFound` otherwise. There is no lock file and no version-constraint grammar.
+
+## Installing from a zip URL
+
+You can install any MATLAB code that's published as a zip archive, even if it's not in a MIP channel:
+
+```matlab
+mip install my_package --url https://github.com/someone/repo/archive/refs/heads/main.zip
+```
+
+MIP downloads and extracts the archive, generates a `mip.yaml` via `mip init` if one isn't included, and installs it as a local package. The positional name (`my_package` above) becomes the package name.
+
+URL-installed packages cannot be updated automatically — `mip update` skips them, since the original archive is not preserved. To pull a newer version, run `mip install --url` again (uninstalling first if needed).
+
+## Installing from MATLAB File Exchange
+
+`--url` also accepts a File Exchange landing page URL directly — just copy it from your browser:
+
+```matlab
+mip install some_package --url https://www.mathworks.com/matlabcentral/fileexchange/12345-some-package
+```
+
+Since File Exchange entries don't come with a `mip.yaml`, MIP makes a best guess at which subdirectories to add to the MATLAB path on load. You may need to tweak the generated `mip.yaml` (or use `--addpath` / `--rmpath` on `mip load`) if the defaults aren't quite right.
+
+This only works for File Exchange entries distributed as a zip file. MATLAB Toolbox (`.mltbx`) entries are not supported.
 
 ## Architectures
 
