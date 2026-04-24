@@ -43,7 +43,7 @@ This adds the package (and its dependencies) to your path for the current sessio
 
 ### Adding or removing extra paths at load time
 
-Sometimes a package's default `addpaths` aren't quite what you want — you may need an extra subdirectory on the path, or want to drop one that shadows something else. Pass `--addpath <relpath>` or `--rmpath <relpath>` to `mip load`:
+Sometimes a package's default `paths` aren't quite what you want — you may need an extra subdirectory on the path, or want to drop one that shadows something else. Pass `--addpath <relpath>` or `--rmpath <relpath>` to `mip load`:
 
 ```matlab
 mip load my_package --addpath examples

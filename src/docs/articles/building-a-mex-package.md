@@ -80,7 +80,7 @@ homepage: "https://github.com/mip-org/hello_mip_mex"
 repository: "https://github.com/mip-org/hello_mip_mex"
 dependencies: []
 
-addpaths:
+paths:
   - path: "."
 
 builds:
@@ -92,7 +92,7 @@ Compared to a pure-MATLAB package:
 
 - `architectures` lists the specific platforms to build for, instead of `[any]`. Each architecture gets its own build with the appropriate MEX binary.
 - `compile_script` points to the MATLAB script that compiles the MEX files. The channel's CI runs this automatically on each target platform.
-- The `addpaths` entry points to the directory containing both the `.c` source and the compiled `.mex*` binary. MATLAB resolves the MEX function by name, just like a `.m` file.
+- The `paths` entry points to the directory containing both the `.c` source and the compiled `.mex*` binary. MATLAB resolves the MEX function by name, just like a `.m` file.
 
 MIP strips any pre-compiled MEX binaries from the source before building. This ensures every binary is built from source in CI, so users get consistent, trustworthy builds for their platform.
 

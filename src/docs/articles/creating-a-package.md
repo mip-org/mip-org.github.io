@@ -16,7 +16,7 @@ cd /path/to/my_package
 mip init
 ```
 
-This walks the directory, adds any folders that contain MATLAB code to `addpaths`, creates a blank `test_my_package.m` placeholder, and writes a `mip.yaml` ready for you to fill in. The package name defaults to the directory's basename; override it with `--name` if needed:
+This walks the directory, adds any folders that contain MATLAB code to `paths`, creates a blank `test_my_package.m` placeholder, and writes a `mip.yaml` ready for you to fill in. The package name defaults to the directory's basename; override it with `--name` if needed:
 
 ```matlab
 mip init /path/to/my_package --name my_package
@@ -36,7 +36,7 @@ version: "0.1.0"
 license: MIT
 dependencies: []
 
-addpaths:
+paths:
   - path: "."
 
 builds:
@@ -45,7 +45,7 @@ builds:
 
 `mip init` generates this shape with some fields left blank (`description`, `license`, `homepage`, and `repository`) and `version: "unknown"` as a placeholder, ready for you to edit.
 
-The `addpaths` entries tell MIP which directories to add to the MATLAB path when the package is loaded. Only the listed directories are added — subdirectories are not added automatically. `architectures: [any]` means the package is pure MATLAB with no compiled code.
+The `paths` entries tell MIP which directories to add to the MATLAB path when the package is loaded. Only the listed directories are added — subdirectories are not added automatically. `architectures: [any]` means the package is pure MATLAB with no compiled code.
 
 ## Installing locally
 
